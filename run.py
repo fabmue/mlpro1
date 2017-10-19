@@ -45,6 +45,7 @@ class Action(ABC):
         if self.args.smt_label != "debug":
             self._save()
 
+
     def _load_data(self):
         try:
             X = np.load(self.args.X)
@@ -99,6 +100,9 @@ class ConfigAction(Action):
         self.transform()
 
     def _save(self):
+        print("saving model\n")
+        sys.stdout.flush()
+
         class_name = self.config["class"].__name__
         joblib.dump(self.model,
                     normpath(self.save_path+class_name+".pkl"))

@@ -4,6 +4,9 @@ import pandas as pd
 from sklearn.utils.validation import check_X_y, check_array, check_is_fitted
 from matplotlib import pyplot as plt
 
+from sklearn.kernel_ridge import KernelRidge
+from sklearn.linear_model import BayesianRidge
+
 
 class KernelEstimator(skl.base.BaseEstimator, skl.base.TransformerMixin):
     """docstring"""
@@ -57,6 +60,86 @@ class KernelEstimator(skl.base.BaseEstimator, skl.base.TransformerMixin):
             df.to_csv(self.save_path + "KernelEstimatorScore.csv")
 
         return score
+
+    def set_save_path(self, save_path):
+        self.save_path = save_path
+
+
+class SklearnRidge():
+    def __init__(self, save_path=None):
+        self.save_path = save_path
+        self.reg = None
+
+    def fit(self, X, y):
+        X, y = check_X_y(X, y)
+        reg = KernelRidge(alpha=1.0)
+        reg.fit(X, y)
+
+        self.reg = reg
+
+        return self
+
+    def predict(self, X):
+        check_is_fitted(self, ["reg"])
+        X = check_array(X)
+
+        prediction = self.reg.predict(X)
+        return prediction
+
+    # def score(self, X, y, sample_weight=None):
+    #     scores = (self.predict(X) - y) ** 2 / len(y)
+    #     score = np.sum(scores)
+    #
+    #     if self.save_path is not None:
+    #         plt.figure()
+    #         plt.plot(scores, "o")
+    #         plt.savefig(self.save_path + "KernelEstimatorScore.png")
+    #         plt.close()
+    #
+    #         df = pd.DataFrame({"score": scores})
+    #         df.to_csv(self.save_path + "KernelEstimatorScore.csv")
+    #
+    #     return score
+
+    def set_save_path(self, save_path):
+        self.save_path = save_path
+
+
+class skBayesianRidge():
+    def __init__(self, save_path=None):
+        self.save_path = save_path
+        self.reg = None
+
+    def fit(self, X, y):
+        X, y = check_X_y(X, y)
+        reg = BayesianRidge(verbose=True)
+        reg.fit(X, y)
+
+        self.reg = reg
+
+        return self
+
+    def predict(self, X):
+        check_is_fitted(self, ["reg"])
+        X = check_array(X)
+
+        prediction = self.reg.predict(X)
+        return prediction
+
+    # def score(self, X, y, sample_weight=None):
+    #     scores = (self.predict(X) - y) ** 2 / len(y)
+    #     score = np.sum(scores)
+    #
+    #     if self.save_path is not None:
+    #         plt.figure()
+    #         plt.plot(scores, "o")
+    #         plt.savefig(self.save_path + "KernelEstimatorScore.png")
+    #         plt.close()
+    #
+    #         df = pd.DataFrame({"score": scores})
+    #         df.to_csv(self.save_path + "KernelEstimatorScore.csv")
+    #
+    #     return score
 
     def set_save_path(self, save_path):
         self.save_path = save_path
